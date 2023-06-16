@@ -1,43 +1,256 @@
-
-Prefix(:=<http://purl.obolibrary.org/obo/collections-ontology.owl#>)
-Prefix(dce:=<http://purl.org/dc/elements/1.1/>)
+Prefix(:=<http://purl.org/co/>)
+Prefix(dc:=<http://purl.org/dc/elements/1.1/>)
 Prefix(owl:=<http://www.w3.org/2002/07/owl#>)
 Prefix(rdf:=<http://www.w3.org/1999/02/22-rdf-syntax-ns#>)
 Prefix(xml:=<http://www.w3.org/XML/1998/namespace>)
 Prefix(xsd:=<http://www.w3.org/2001/XMLSchema#>)
+Prefix(foaf:=<http://xmlns.com/foaf/0.1/>)
 Prefix(rdfs:=<http://www.w3.org/2000/01/rdf-schema#>)
-Prefix(dcterms:=<http://purl.org/dc/terms/>)
+Prefix(swrl:=<http://www.w3.org/2003/11/swrl#>)
+Prefix(error:=<http://www.essepuntato.it/2009/10/error/>)
+Prefix(swrlb:=<http://www.w3.org/2003/11/swrlb#>)
+Prefix(vitro:=<http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>)
 
 
-Ontology(<http://purl.obolibrary.org/obo/collections-ontology.owl>
+Ontology(<http://purl.org/co>
+Import(<http://purl.org/spar/error>)
+Annotation(dc:contributor "Marco Ocana"^^xsd:string)
+Annotation(dc:contributor "Paolo Ciccarese"^^xsd:string)
+Annotation(dc:contributor "Silvio Peroni, Rolf Guescini"^^xsd:string)
+Annotation(dc:creator <http://www.paolociccarese.info>)
+Annotation(dc:date "March 19, 2012, June 16, 2023"^^xsd:string)
+Annotation(dc:format "application/rdf+xml"^^xsd:string)
+Annotation(dc:language "en-us, de-de")
+Annotation(dc:title "The Collections (CO) VIVO Alignment Ontology"@en)
+Annotation(vitro:ontologyPrefixAnnot "co")
+Annotation(owl:versionInfo "2.0"^^xsd:string)
 
-
-Annotation(dcterms:description "None")
-Annotation(dcterms:license <https://creativecommons.org/licenses/unspecified>)
-Annotation(dcterms:title "")
-
-
-Declaration(Class(<http://purl.obolibrary.org/obo/COLLECTIONS-ONTOLOGY_0000000>))
-Declaration(AnnotationProperty(dcterms:description))
-Declaration(AnnotationProperty(dcterms:license))
-Declaration(AnnotationProperty(dcterms:title))
+Declaration(Class(:Bag))
+Declaration(Class(:Collection))
+Declaration(Class(:Item))
+Declaration(Class(:List))
+Declaration(Class(:ListItem))
+Declaration(Class(:Set))
+Declaration(Class(owl:Thing))
+Declaration(ObjectProperty(:element))
+Declaration(ObjectProperty(:elementOf))
+Declaration(ObjectProperty(:firstItem))
+Declaration(ObjectProperty(:firstItemOf))
+Declaration(ObjectProperty(:followedBy))
+Declaration(ObjectProperty(:item))
+Declaration(ObjectProperty(:itemContent))
+Declaration(ObjectProperty(:itemContentOf))
+Declaration(ObjectProperty(:itemOf))
+Declaration(ObjectProperty(:lastItem))
+Declaration(ObjectProperty(:lastItemOf))
+Declaration(ObjectProperty(:nextItem))
+Declaration(ObjectProperty(:precededBy))
+Declaration(ObjectProperty(:previousItem))
+Declaration(DataProperty(:index))
+Declaration(DataProperty(:size))
+Declaration(DataProperty(error:hasError))
+Declaration(AnnotationProperty(dc:contributor))
+Declaration(AnnotationProperty(dc:creator))
+Declaration(AnnotationProperty(dc:date))
+Declaration(AnnotationProperty(dc:description))
+Declaration(AnnotationProperty(dc:format))
+Declaration(AnnotationProperty(dc:language))
+Declaration(AnnotationProperty(dc:publisher))
+Declaration(AnnotationProperty(dc:title))
+Declaration(AnnotationProperty(vitro:ontologyPrefixAnnot))
 
 ############################
-#   Annotation Properties
+#   Object Properties
 ############################
 
-AnnotationAssertion(rdfs:label dcterms:description "description")
-AnnotationAssertion(rdfs:label dcterms:license "license")
-AnnotationAssertion(rdfs:label dcterms:title "title")
+# Object Property: :element (has element)
+
+AnnotationAssertion(rdfs:comment :element "The link to the members of a collection"@en)
+AnnotationAssertion(rdfs:label :element "has element"@en)
+InverseObjectProperties(:element :elementOf)
+ObjectPropertyDomain(:element :Collection)
+
+# Object Property: :elementOf (is element of)
+
+AnnotationAssertion(rdfs:comment :elementOf "The link to a collection in which the object is member."@en)
+AnnotationAssertion(rdfs:label :elementOf "is element of"@en)
+
+# Object Property: :firstItem (has first item)
+
+AnnotationAssertion(rdfs:comment :firstItem "The link to the first item of the list."@en)
+AnnotationAssertion(rdfs:label :firstItem "has first item"@en)
+SubObjectPropertyOf(:firstItem :item)
+InverseObjectProperties(:firstItem :firstItemOf)
+FunctionalObjectProperty(:firstItem)
+ObjectPropertyDomain(:firstItem :List)
+ObjectPropertyRange(:firstItem ObjectIntersectionOf(:ListItem ObjectExactCardinality(0 :previousItem) DataHasValue(:index "1"^^xsd:positiveInteger)))
+
+# Object Property: :firstItemOf (is first item of)
+
+AnnotationAssertion(rdfs:comment :firstItemOf "The link to a list in which the item is first item."@en)
+AnnotationAssertion(rdfs:label :firstItemOf "is first item of"@en)
+SubObjectPropertyOf(:firstItemOf :itemOf)
+
+# Object Property: :followedBy (is followed by)
+
+AnnotationAssertion(dc:description :followedBy "Given the list (I[1], I[2], ... , I[i-1], I[i], I[i+1], ... , I[n-1], I[n]), the item I[i] is followed by I[i+1], ... , I[n-1] and I[n]."@en)
+AnnotationAssertion(rdfs:comment :followedBy "The link to the following item in a list."@en)
+AnnotationAssertion(rdfs:label :followedBy "is followed by"@en)
+InverseObjectProperties(:followedBy :precededBy)
+TransitiveObjectProperty(:followedBy)
+ObjectPropertyDomain(:followedBy :ListItem)
+ObjectPropertyRange(:followedBy :ListItem)
+
+# Object Property: :item (has item)
+
+AnnotationAssertion(rdfs:comment :item "The link to every item of the bag"@en)
+AnnotationAssertion(rdfs:label :item "has item"@en)
+InverseObjectProperties(:item :itemOf)
+ObjectPropertyDomain(:item :Bag)
+ObjectPropertyRange(:item :Item)
+
+# Object Property: :itemContent (has item content)
+
+AnnotationAssertion(rdfs:comment :itemContent "The link to the actual resource to which the item refers."@en)
+AnnotationAssertion(rdfs:label :itemContent "has item content"@en)
+InverseObjectProperties(:itemContent :itemContentOf)
+FunctionalObjectProperty(:itemContent)
+ObjectPropertyDomain(:itemContent :Item)
+ObjectPropertyRange(:itemContent ObjectComplementOf(:Item))
+
+# Object Property: :itemContentOf (is item content of)
+
+AnnotationAssertion(rdfs:comment :itemContentOf "The link to the item that refers to the resource."@en)
+AnnotationAssertion(rdfs:label :itemContentOf "is item content of"@en)
+
+# Object Property: :itemOf (is item of)
+
+AnnotationAssertion(rdfs:comment :itemOf "The link to a bag in which the item is member."@en)
+AnnotationAssertion(rdfs:label :itemOf "is item of"@en)
+
+# Object Property: :lastItem (has last item)
+
+AnnotationAssertion(rdfs:comment :lastItem "The link to the last item of the list."@en)
+AnnotationAssertion(rdfs:label :lastItem "has last item"@en)
+SubObjectPropertyOf(:lastItem :item)
+InverseObjectProperties(:lastItem :lastItemOf)
+FunctionalObjectProperty(:lastItem)
+ObjectPropertyDomain(:lastItem :List)
+ObjectPropertyRange(:lastItem ObjectIntersectionOf(:ListItem ObjectExactCardinality(0 :nextItem)))
+
+# Object Property: :lastItemOf (is last item of)
+
+AnnotationAssertion(rdfs:comment :lastItemOf "The link to a list in which the item is last item."@en)
+AnnotationAssertion(rdfs:label :lastItemOf "is last item of"@en)
+SubObjectPropertyOf(:lastItemOf :itemOf)
+
+# Object Property: :nextItem (has next item)
+
+AnnotationAssertion(dc:description :nextItem "Given the list (I[1], I[2], ... , I[i-1], I[i], I[i+1], ... , I[n-1], I[n]), the next item of I[i] is I[i+1]."@en)
+AnnotationAssertion(rdfs:comment :nextItem "The link to the next item in a list."@en)
+AnnotationAssertion(rdfs:label :nextItem "has next item"@en)
+SubObjectPropertyOf(:nextItem :followedBy)
+InverseObjectProperties(:nextItem :previousItem)
+FunctionalObjectProperty(:nextItem)
+
+# Object Property: :precededBy (is preceded by)
+
+AnnotationAssertion(dc:description :precededBy "Given the list (I[1], I[2], ... , I[i-1], I[i], I[i+1], ... , I[n-1], I[n]), the item I[i] is preceded by I[i-1], ... , I[2] and I[1]."@en)
+AnnotationAssertion(rdfs:comment :precededBy "The link to the preceding item in a list."@en)
+AnnotationAssertion(rdfs:label :precededBy "is preceded by"@en)
+TransitiveObjectProperty(:precededBy)
+
+# Object Property: :previousItem (has previous item)
+
+AnnotationAssertion(dc:description :previousItem "Given the list (I[1], I[2], ... , I[i-1], I[i], I[i+1], ... , I[n-1], I[n]), the previous item of I[i] is I[i-1]."@en)
+AnnotationAssertion(rdfs:comment :previousItem "The link to the previous item in a list."@en)
+AnnotationAssertion(rdfs:label :previousItem "has previous item"@en)
+SubObjectPropertyOf(:previousItem :precededBy)
+FunctionalObjectProperty(:previousItem)
+
+
+############################
+#   Data Properties
+############################
+
+# Data Property: :index (has index)
+
+AnnotationAssertion(rdfs:comment :index "A number identifying the position, starting from 1, of a particular list item within a list."@en)
+AnnotationAssertion(rdfs:label :index "has index"@en)
+DataPropertyDomain(:index :ListItem)
+DataPropertyRange(:index xsd:positiveInteger)
+
+# Data Property: :size (has size)
+
+AnnotationAssertion(dc:description :size "CO defines the size of a collection as the sum of the number of times entities that are part of the collection appear in it. This means that co:size considers how much each entity is involved by a particular collection, i.e.:
+- the size of the set {a, b, c} is three
+- the size of the bag [a, a, b, b, b, c] is five
+- the size of the list (a, b, c, b, a, b, c, c) is seven"@en)
+AnnotationAssertion(rdfs:comment :size "The number of item belonging to a collection."@en)
+AnnotationAssertion(rdfs:label :size "has size"@en)
+DataPropertyDomain(:size :Collection)
+DataPropertyRange(:size xsd:nonNegativeInteger)
+
+
 
 ############################
 #   Classes
 ############################
 
-# Class: <http://purl.obolibrary.org/obo/COLLECTIONS-ONTOLOGY_0000000> (root node)
+# Class: :Bag (bag)
 
-AnnotationAssertion(rdfs:label <http://purl.obolibrary.org/obo/COLLECTIONS-ONTOLOGY_0000000> "root node"@en)
+AnnotationAssertion(rdfs:comment :Bag "Collection that can have a number of copies of each object"@en)
+AnnotationAssertion(rdfs:label :Bag "bag"@en)
+SubClassOf(:Bag :Collection)
+DisjointClasses(:Bag :Set)
+
+# Class: :Collection (collection)
+
+AnnotationAssertion(rdfs:comment :Collection "A group of objects that can be considered as a whole."@en)
+AnnotationAssertion(rdfs:label :Collection "collection"@en)
+SubClassOf(:Collection owl:Thing)
+SubClassOf(:Collection ObjectAllValuesFrom(:element owl:Thing))
+SubClassOf(:Collection DataExactCardinality(1 :size))
+DisjointClasses(:Collection :Item)
+
+# Class: :Item (item)
+
+AnnotationAssertion(rdfs:comment :Item "Element belonging to a bag"@en)
+AnnotationAssertion(rdfs:label :Item "item"@en)
+SubClassOf(:Item owl:Thing)
+SubClassOf(:Item ObjectSomeValuesFrom(ObjectInverseOf(:item) :Bag))
+
+# Class: :List (list)
+
+AnnotationAssertion(rdfs:comment :List "An ordered array of items, that can be present in multiple copies"@en)
+AnnotationAssertion(rdfs:label :List "list"@en)
+SubClassOf(:List ObjectIntersectionOf(:Bag ObjectAllValuesFrom(:item :ListItem)))
+SubClassOf(:List ObjectMaxCardinality(1 :firstItem))
+SubClassOf(:List ObjectMaxCardinality(1 :lastItem))
+
+# Class: :ListItem (list item)
+
+AnnotationAssertion(rdfs:comment :ListItem "element belonging to a list"@en)
+AnnotationAssertion(rdfs:label :ListItem "list item"@en)
+SubClassOf(:ListItem :Item)
+SubClassOf(:ListItem DataExactCardinality(1 :index))
+
+# Class: :Set (set)
+
+AnnotationAssertion(rdfs:comment :Set "A collection that cannot contain duplicate elements."@en)
+AnnotationAssertion(rdfs:label :Set "set"@en)
+SubClassOf(:Set :Collection)
 
 
+SubClassOf(ObjectIntersectionOf(:List ObjectSomeValuesFrom(:item :ListItem)) ObjectIntersectionOf(:List ObjectSomeValuesFrom(:firstItem :Item) ObjectSomeValuesFrom(:lastItem :Item)))
+SubObjectPropertyOf(ObjectPropertyChain(:item :itemContent) :element)
+SubObjectPropertyOf(ObjectPropertyChain(:item :nextItem) :item)
+DLSafeRule(Body(ObjectPropertyAtom(:followedBy Variable(<urn:swrl#x>) Variable(<urn:swrl#x>)))Head(DataPropertyAtom(error:hasError Variable(<urn:swrl#x>) "A list item cannot be followed by itself")))
+DLSafeRule(Body(ObjectPropertyAtom(:itemOf Variable(<urn:swrl#i>) Variable(<urn:swrl#l>)) DataPropertyAtom(:index Variable(<urn:swrl#i>) Variable(<urn:swrl#value>)) DataPropertyAtom(:size Variable(<urn:swrl#l>) Variable(<urn:swrl#value>)))Head(ObjectPropertyAtom(:lastItem Variable(<urn:swrl#l>) Variable(<urn:swrl#i>))))
+DLSafeRule(Body(DataPropertyAtom(:index Variable(<urn:swrl#li>) "1") ObjectPropertyAtom(:itemOf Variable(<urn:swrl#li>) Variable(<urn:swrl#l>)))Head(ObjectPropertyAtom(:firstItem Variable(<urn:swrl#l>) Variable(<urn:swrl#li>))))
+DLSafeRule(Body(ObjectPropertyAtom(:itemOf Variable(<urn:swrl#li1>) Variable(<urn:swrl#l>)) ObjectPropertyAtom(:itemOf Variable(<urn:swrl#li2>) Variable(<urn:swrl#l>)) DataPropertyAtom(:index Variable(<urn:swrl#li1>) Variable(<urn:swrl#r1>)) DataPropertyAtom(:index Variable(<urn:swrl#li2>) Variable(<urn:swrl#r2>)) BuiltInAtom(swrlb:add Variable(<urn:swrl#r2>) Variable(<urn:swrl#r1>) "1"^^xsd:integer))Head(ObjectPropertyAtom(:nextItem Variable(<urn:swrl#li1>) Variable(<urn:swrl#li2>))))
+DLSafeRule(Body(DataPropertyAtom(:size Variable(<urn:swrl#l>) Variable(<urn:swrl#value>)) ObjectPropertyAtom(:lastItem Variable(<urn:swrl#l>) Variable(<urn:swrl#i>)))Head(DataPropertyAtom(:index Variable(<urn:swrl#i>) Variable(<urn:swrl#value>))))
+DLSafeRule(Body(DataPropertyAtom(:index Variable(<urn:swrl#last>) Variable(<urn:swrl#r>)) ObjectPropertyAtom(:lastItem Variable(<urn:swrl#list>) Variable(<urn:swrl#last>)))Head(DataPropertyAtom(:size Variable(<urn:swrl#list>) Variable(<urn:swrl#r>))))
+DLSafeRule(Body(ObjectPropertyAtom(:nextItem Variable(<urn:swrl#current>) Variable(<urn:swrl#next>)) DataPropertyAtom(:index Variable(<urn:swrl#current>) Variable(<urn:swrl#r>)) BuiltInAtom(swrlb:add Variable(<urn:swrl#nextR>) Variable(<urn:swrl#r>) "1"^^xsd:integer))Head(DataPropertyAtom(:index Variable(<urn:swrl#next>) Variable(<urn:swrl#nextR>))))
+DLSafeRule(Body(ObjectPropertyAtom(:precededBy Variable(<urn:swrl#x>) Variable(<urn:swrl#x>)))Head(DataPropertyAtom(error:hasError Variable(<urn:swrl#x>) "A list item cannot be preceded by itself")))
 )
-

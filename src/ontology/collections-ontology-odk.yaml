@@ -22,7 +22,6 @@ ensure_valid_rdfxml: false
 exclude_tautologies: structural
 export_formats:
 - owl
-- obo
 export_project_yaml: false
 git_main_branch: main
 git_user: ''
@@ -32,7 +31,7 @@ id: collections-ontology
 import_component_format: ofn
 import_group: null
 import_pattern_ontology: false
-license: https://creativecommons.org/licenses/unspecified
+license: https://creativecommons.org/choose/zero/
 namespaces: null
 obo_format_options: ''
 owltools_memory: ''
@@ -79,7 +78,7 @@ sssom_mappingset_group: null
 subset_group: null
 title: ''
 travis_emails: null
-uribase: http://purl.obolibrary.org/obo
+uribase: http://purl.org/co
 uribase_suffix: null
 use_context: false
 use_custom_import_module: false
