@@ -1,0 +1,13 @@
+format-version: 1.2
+data-version: collections-ontology/releases/2023-06-16/collections-ontology-base.owl
+ontology: collections-ontology/collections-ontology-base
+property_value: http://purl.org/dc/elements/1.1/type IAO:8000001
+property_value: http://purl.org/dc/terms/description "None" xsd:string
+property_value: http://purl.org/dc/terms/license https://creativecommons.org/licenses/unspecified
+property_value: http://purl.org/dc/terms/title "" xsd:string
+property_value: owl:versionInfo "2023-06-16" xsd:string
+
+[Term]
+id: COLLECTIONS-ONTOLOGY:0000000
+name: root node
+
